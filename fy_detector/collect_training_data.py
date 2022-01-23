@@ -19,6 +19,7 @@ file = np.genfromtxt(TRAINING_FILE_NAME, delimiter=',')
 
 cap = cv2.VideoCapture(0)
 
+# TODO: Choose a new pose (auto coding), or use the exist code.
 LABEL = input("Please input the label code : ")
 
 while cap.isOpened():
