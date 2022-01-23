@@ -1,9 +1,12 @@
 import cv2
 import mediapipe as mp
 import numpy as np
+import datetime
 import training_utils
 
 MAX_NUM_HANDS = 1
+TRAINING_FILE_NAME = 'train.csv'
+LABEL = 11
 
 # MediaPipe hands model
 mp_hands = mp.solutions.hands
@@ -14,7 +17,7 @@ hands = mp_hands.Hands(
     min_tracking_confidence=0.5)
 
 # Gesture recognition model
-file = np.genfromtxt('train.csv', delimiter=',')
+file = np.genfromtxt(TRAINING_FILE_NAME, delimiter=',')
 angle = file[:,:-1].astype(np.float32)
 label = file[:, -1].astype(np.float32)
 knn = cv2.ml.KNearest_create()
@@ -42,15 +45,21 @@ while cap.isOpened():
             idx = int(results[0][0])
 
             # 11 is the label of middle finger in training data.
-            if idx == 11:
+            if idx == LABEL:
                 x1, y1 = tuple((joint.min(axis=0)[:2] * [img.shape[1], img.shape[0]] * 0.95).astype(int))
                 x2, y2 = tuple((joint.max(axis=0)[:2] * [img.shape[1], img.shape[0]] * 1.05).astype(int))
 
-                cv2.rectangle(img, (x1, y1), (x2, y2), (0, 0, 255), 3, cv2.LINE_AA)
+                training_utils.do_mosaic(img, x1, y1, x2-x1, y2-y1, neighbor=9)
 
             # Uncomment the line below to see the skeleton.
             # mp_drawing.draw_landmarks(img, res, mp_hands.HAND_CONNECTIONS)
 
     cv2.imshow('fy_detector', img)
-    if cv2.waitKey(1) == ord('q'):
+
+    k = cv2.waitKey(1)
+    if k == ord('q'):
         break
+    elif k == ord('s'):
+        cv2.imwrite('img_'+datetime.datetime.now().strftime('%m%d%H%M')+'.jpg', img)
+        print("Saved image.")
+    
