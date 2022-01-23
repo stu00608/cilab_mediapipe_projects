@@ -1,5 +1,21 @@
 # cilab_mediapipe_projects
 
+## Environment setting
+---
+### Installation
+
+```bash
+conda create --name YOUR_ENV_NAME python=3.7
+conda activate YOUR_ENV_NAME
+```
+
+### Python module installation
+
+```bash
+pip install mediapipe
+pip install opencv-python
+```
+
 ## Usage
 ---
 ### collect_training_data.py
