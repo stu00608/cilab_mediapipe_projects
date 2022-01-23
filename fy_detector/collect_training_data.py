@@ -49,10 +49,11 @@ while cap.isOpened():
     if k == ord('q'):
         break
     elif k == ord('a'):
-        if data.all():
+        try:
             file = np.vstack((file, data))
             np.savetxt('train.csv', file, delimiter=',')
             print("Saved pose to csv file.")
-
+        except:
+            print("No data.")
 
 
